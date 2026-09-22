@@ -1,0 +1,5 @@
+t_se98=0.3400  FN=2  FP=5
+train median M: cp_worst=0.1827 area_worst=1332.5 texture_mean=21.52 smoothness_worst=0.1419
+train median B: cp_worst=0.07412 area_worst=548.45 texture_mean=17.31 smoothness_worst=0.12345
+FN median: cp_worst=0.09844 area_worst=888.25
+FP median: cp_worst=0.1571 area_worst=614.9

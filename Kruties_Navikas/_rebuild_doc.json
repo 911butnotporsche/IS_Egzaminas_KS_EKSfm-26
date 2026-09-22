@@ -1,0 +1,272 @@
+{
+  "blocks": [
+    {"t":"title1","x":"INTELEKTUALIOSIOS SISTEMOS"},
+    {"t":"title2","x":"Magistrantūros studijos"},
+    {"t":"title3","x":"EGZAMINO ATASKAITA"},
+    {"t":"title4","x":"KRŪTIES NAVIKO POŽYMIŲ KLASIFIKAVIMAS"},
+    {"t":"title5","x":"Veikiantis ir atkuriamas WDBC sprendimo palaikymo prototipas"},
+    {"t":"meta","x":"Duomenų rinkinys: UCI Breast Cancer Wisconsin (Diagnostic), WDBC"},
+    {"t":"meta","x":"Parengė: Kamil Skaskevič"},
+    {"t":"meta","x":"Grupė: EKSfm-26"},
+    {"t":"meta","x":"2026 m. rugsėjis"},
+
+    {"t":"h1","x":"1. Užduotis ir kontekstas iš kolokviumo (santrauka)"},
+    {"t":"p","x":"Užduotis – iš 30 jau apskaičiuotų FNA branduolio požymių (be paciento identifikatoriaus) atskirti piktybinį atvejį (M = 1) nuo gerybinio (B = 0). Duomenys – UCI WDBC rinkinys [1, 2]: 569 atvejai, iš jų 212 piktybinių ir 357 gerybiniai. Tai dvejetainis klasifikavimas su kalibruota tikimybe P(M|x), o ne vaizdų analizė ir ne klinikinė diagnozė. Kolokviume užfiksuota, kad klaidingai neigiamo atsakymo (FN) kaina yra penkis kartus didesnė už klaidingai teigiamo (FP); kad klasės gali būti beveik tiesiškai atskiriamos, todėl sudėtingesnis modelis nebūtinai pagerins AUC (lubų efektas); ir kad išorinis testas turi likti užrakintas. Hipotezė H1 tikrinama taške t_se98: specifiškumo skirtumas Sp(SVM) minus Sp(LR) turi būti bent 0,03, o AUC skirtumo DeLong intervalo apatinė riba – ne žemesnė kaip −0,005. H2 tikrina Brier balą ir kalibracijos nuolydį. H3 – įdėtinis kryžminis patikrinimas po testo; jis H1 neatstoja. Plane pagrindinis metodas yra SVM su RBF branduoliu; atskaitos – daugumos klasifikatorius ir L2 logistinė regresija; alternatyvos – MLP ir RBF tinklas. Ši ataskaita aprašo įgyvendinimą ir užrakinto testo rezultatus. Problemos išskaidymas ir literatūros apžvalga pateikti kolokviumo dokumente ir čia nekartojami."},
+
+    {"t":"h1","x":"2. Įgyvendinimas: duomenų grandinė, pradiniai ir intelektualiųjų sistemų metodai"},
+    {"t":"h2","x":"2.1 Duomenų paruošimo grandinė"},
+    {"t":"p","x":"Sprendimas įgyvendintas MATLAB R2026a aplinkoje ir paleidžiamas vienu vamzdžiu run_all.m. Duomenis parsiunčia get_wdbc, o invariantus tikrina load_wdbc: UCI rinkinys ID 17, DOI 10.24432/C5DW2B [1], 569 eilutės, nė vienos trūkstamos reikšmės. Neigiamos požymių reikšmės atmetamos su klaida; nuliai concavity ir concave_points paliekami, nes jie yra oficialiame faile. Skaidymas daromas funkcija cvpartition su HoldOut 0,20, stratifikacija pagal klasę ir sėkla rng(42). MATLAB natūraliai davė 456 mokymo atvejus (170 M / 286 B) ir 113 testo atvejų (42 M / 71 B). Šis dydis priimtas faile preregistration.md ir ranka nekirptas. Z-score (Kolokviumo formulė 1) skaičiuojamas tik iš mokymo dalies: jei fit_scaler gauna visas 569 eilutes, jis meta klaidą. Vidinė kryžminė patikra turi 5 poaibius, kartojamus 5 kartus (25 skaidiniai); kiekviename folde scaler mokomas iš naujo (tune_cv.m). Testas atraunamas lygiai vieną kartą funkcija evaluate_test.m. Vieno naujo atvejo prognozė – app/predict_case.m; ten modelis nebemokomas."},
+    {"t":"tbl","cap":"1 lentelė. Sistemos įvestis ir išvestis (predict_case.m).","rows":[
+      ["Elementas","Tipas","Interpretacija"],
+      ["Įvestis x","R^30 (be ID)","vienas FNA atvejis; NaN/Inf ir x<0 – klaida, ne imputacija"],
+      ["p_malignant","[1e-15; 1-1e-15]","P(M|z) po Platt / sigmoidės"],
+      ["threshold t","[0; 1]","OOF t_se98, t_cost arba t_youden"],
+      ["decision","{B, M}","M jei p >= t"],
+      ["margin_flag / ood_flag","loginis","|p-t|<0,10; požymis už mokymo min–max"],
+      ["disclaimer","tekstas","mokomasis prototipas, ne diagnostika"]
+    ]},
+    {"t":"h2","x":"2.2 Pradiniai ir intelektualiųjų sistemų metodai"},
+    {"t":"p","x":"Visi metodai gauna tą pačią standartizuotą matricą Z, paruoštą pagal formulę (1). Hiperparametrai parenkami pagal vidutinį out-of-fold (OOF) ROC-AUC per 25 vidinius skaidinius. Jei dviejų konfigūracijų AUC skiriasi mažiau nei 0,002, paliekama paprastesnė (tune_cv.m). Užšaldytos reikšmės paimtos iš models/*.mat lauko hp, o ne iš testo lentelių: logistinei regresijai lambda = 0,1; SVM-RBF – C = 0,3 ir branduolio mastelis s = 8; MLP – H = 5, lambda = 0,3 ir penkios sėklos; RBF tinklui – J = 40, kappa = 2, lambda = 0,1."},
+    {"t":"tbl","cap":"2 lentelė. Įgyvendinti metodai, jų vieta kode ir naudojimo formulės.","rows":[
+      ["Modelis","Failas / funkcija","Naudojimo formulė","HP"],
+      ["B0 dauguma","train_majority.m","visada B; p = P_mok(M)","–"],
+      ["B1 L2 LR","train_logreg.m, fitclinear","p = sigma(w^T z + b)","lambda"],
+      ["M1 SVM-RBF","train_svm_rbf.m, fitcsvm + Platt","f(z)=Sum a_i y_i K_s(z_i,z)+b; p=Platt(f)","C, s"],
+      ["M2 MLP","train_mlp.m, mlp_backprop_manual.m","h=tanh(W1 z+b1), p=sigma(w2^T h + b2)","H, lambda, sėklos"],
+      ["M3 RBF tinklas","train_rbfnet.m","a = w0 + Sum w_j phi_j(z)","J, kappa, lambda"]
+    ]},
+
+    {"t":"h1","x":"3. Tinklo koeficientai, formulės ir sąsaja su kodu"},
+    {"t":"p","x":"Produkcinis daugiasluoksnis perceptronas (MLP) mokomas MATLAB funkcijomis patternnet ir trainscg faile train_mlp.m: bibliotekos sprendiklis parenka svorius, o architektūra lieka 30 → H → 1. Išėjimo ir atgalinio sklidimo (backpropagation) formulės, kurių reikia pačiam skaičiavimui parodyti, įrašytos ir vykdomos atskirame faile mlp_backprop_manual.m. To failo antraštėje nurodyta Kolokviumo 3.3 tema ir pastaba, kad rankinis ciklas skirtas palyginimui, o ne hiperparametrų paieškai. RBF tinklo išėjimo svoriai gaunami uždara ridge formule, o ne gradientiniu atgaliniu sklidimu (train_rbfnet.m)."},
+    {"t":"h2","x":"3.1 Koeficientų sužymėjimas (MLP 30 → H = 5 → 1)"},
+    {"t":"p","x":"Architektūra tokia: įėjimas z priklauso R^30 (požymiai jau padalyti z-score), paslėptame sluoksnyje yra H = 5 neuronai su tansig (tai tas pats kaip tanh), o išėjime – vienas neuronas su logsig (tai sigmoidė sigma). Užšaldytame faile mlp.mat saugomi penki tinklai, išmokyti sėklomis 1–5. Funkcija predict_proba jų tikimybes vidurkina. Žemiau pateikti viso pirmojo tinklo (nets{1}) koeficientai, nuskaitomi iš modelio failo, o ne perskaičiuoti kryžminėje patikroje."},
+    {"t":"tbl","cap":"3 lentelė. MLP koeficientai (models/mlp.mat, nets{1}, jei nenurodyta kitaip).","rows":[
+      ["Koeficientas","Dydis","Reikšmė / santrauka","Kur saugoma"],
+      ["H","skaliaras","5  (hp.H, models/mlp.mat)","model.H"],
+      ["lambda","skaliaras","0,3","model.lambda"],
+      ["W1 = IW{1}","5 x 30","min=-0,303; max=0,301; RMS=0,129; ||W1||_F=1,581","net.IW{1}"],
+      ["b1 = b{1}","5 x 1","[-1,254; 1,246; 1,122; -0,207; 0,271]^T","net.b{1}"],
+      ["w2^T = LW{2,1}","1 x 5","[1,572; 0,853; 0,624; -1,547; 1,778]","net.LW{2,1}"],
+      ["b2 = b{2}","1 x 1","0,0115","net.b{2}"],
+      ["aktyvacijos","–","sluoksnis 1: tansig (tanh); sluoksnis 2: logsig (sigma)","net.layers{i}.transferFcn"],
+      ["ansamblis","5 tinklai","||W1||_F = 1,58; 2,10; 2,23; 2,12; 2,28;  b2 = 0,012; 0,514; 0,472; 0,315; 0,827","model.nets"]
+    ]},
+    {"t":"tbl","cap":"4 lentelė. Matricos W1 eilutės, stulpeliai 1–8 (nets{1}). Likę 22 stulpeliai yra tame pačiame IW{1}; visa matrica yra 5×30.","rows":[
+      ["h","W1 st. 1–8 (suapvalinta iki 3 sk.)"],
+      ["1","0,293  0,136  0,024  0,143  0,171  0,009  0,026  0,014"],
+      ["2","-0,063  0,125  0,110  0,013  0,151  -0,045  0,146  -0,006"],
+      ["3","0,083  0,043  0,013  0,035  -0,049  0,069  -0,024  0,138"],
+      ["4","-0,249  -0,171  -0,182  -0,072  -0,146  -0,026  -0,117  -0,190"],
+      ["5","0,273  0,120  0,286  0,287  0,004  0,084  0,064  0,182"]
+    ]},
+    {"t":"tbl","cap":"5 lentelė. Matricos W1 stulpeliai 9–16 (nets{1}).","rows":[
+      ["h","W1 st. 9–16"],
+      ["1","-0,028  0,009  0,068  0,093  0,118  0,119  -0,032  0,023"],
+      ["2","0,042  0,086  0,070  0,075  -0,018  0,059  0,094  0,001"],
+      ["3","0,144  -0,005  0,035  0,088  0,024  -0,007  -0,061  -0,091"],
+      ["4","0,104  0,037  -0,133  0,024  -0,178  -0,263  -0,019  0,082"],
+      ["5","-0,015  -0,219  0,168  0,061  0,221  0,231  0,037  -0,140"]
+    ]},
+    {"t":"tbl","cap":"6 lentelė. Matricos W1 stulpeliai 17–24 (nets{1}).","rows":[
+      ["h","W1 st. 17–24"],
+      ["1","0,049  0,143  0,030  -0,034  0,208  0,197  0,137  0,229"],
+      ["2","0,105  -0,080  0,013  0,026  0,158  0,018  0,009  0,023"],
+      ["3","-0,096  0,078  -0,116  0,015  0,036  0,147  0,168  0,001"],
+      ["4","-0,088  0,024  0,108  0,168  -0,129  -0,254  -0,281  -0,303"],
+      ["5","-0,081  -0,008  -0,054  -0,200  0,108  0,301  0,265  0,107"]
+    ]},
+    {"t":"tbl","cap":"7 lentelė. Matricos W1 stulpeliai 25–30 (nets{1}). Kartu su 4–6 lentelėmis tai visa 5×30 matrica.","rows":[
+      ["h","W1 st. 25–30"],
+      ["1","0,095  -0,024  0,148  0,252  0,018  -0,048"],
+      ["2","-0,084  -0,012  0,021  0,088  0,041  0,073"],
+      ["3","-0,085  -0,035  0,172  -0,078  0,015  0,079"],
+      ["4","-0,113  0,057  -0,159  0,005  -0,194  -0,084"],
+      ["5","0,300  0,094  0,242  0,014  0,124  0,066"]
+    ]},
+
+    {"t":"h2","x":"3.2 Išėjimo (atsako) skaičiavimas – pilnos formulės"},
+    {"t":"p","x":"Įvestis z priklauso R^30. Paslėpto sluoksnio preaktyvacijos vektorius a^(1) priklauso R^H:"},
+    {"t":"eq","x":"a^((1))=W_1 z+b_1"},
+    {"t":"p","x":"čia W1 yra H × 30 matrica, b1 yra H ilgio vektorius, o H = 5."},
+    {"t":"p","x":"Paslėpto sluoksnio atsakas skaičiuojamas elementine funkcija tansig, kuri MATLAB aplinkoje sutampa su tanh:"},
+    {"t":"eq","x":"h=tanh(a^((1)))"},
+    {"t":"p","x":"Kiekvienam paslėptam neuronui j = 1, ..., H galioja ta pati išraiška h_j = (e^{a_j} − e^{−a_j}) / (e^{a_j} + e^{−a_j})."},
+    {"t":"p","x":"Išėjimo preaktyvacija ir tikimybė skaičiuojamos funkcija logsig, tai yra sigmoidė sigma:"},
+    {"t":"eq","x":"a^((2))=w_2^T h+b_2"},
+    {"t":"eq","x":"p=1/(1+e^{-a^((2))})"},
+    {"t":"p","x":"Gauta p yra P(M|z) ir priklauso intervalui (0, 1). Klasės sprendimas priimamas su užšaldytu slenksčiu t, parinktu iš OOF (out-of-fold) tikimybių, o ne iš testo: prognozė lygi 1, kai p >= t. Produkcijoje penkių tinklų tikimybės vidurkinamos funkcijoje predict_proba.m (kind = mlp). Tai ta pati 30 → H → 1 grandinė, kuri aprašyta train_mlp.m antraštėje."},
+
+    {"t":"h2","x":"3.3 Koeficientų atnaujinimas (backpropagation)"},
+    {"t":"p","x":"Mokymo tikslas – vidutinis dvejetainės kryžminės entropijos nuostolis su L2 reguliarizacija:"},
+    {"t":"eq","x":"L=-(1/n) sum_i [y_i log p_i+(1-y_i)log(1-p_i)]+(lambda/2)(||W_1||_F^2+||w_2||^2)"},
+    {"t":"p","x":"Išvestinės pagal išėjimą rašomos delta taisykle [14]:"},
+    {"t":"eq","x":"delta^((2))=p-y"},
+    {"t":"p","x":"Paslėptam sluoksniui tanh išvestinė yra 1 minus Hadamardo sandauga h o h:"},
+    {"t":"eq","x":"delta^((1))=(1-h o h) o (w_2 delta^((2)))"},
+    {"t":"p","x":"Gradientinis žingsnis yra eta. Gradientai vidurkinami per n objektų. L2 bauda taikoma tik W1 ir w2; poslinkiai b1 ir b2, kaip ir kode, nereguliuojami:"},
+    {"t":"eq","x":"W_1 <- W_1-(eta/n) delta^((1)) Z - eta lambda W_1"},
+    {"t":"eq","x":"b_1 <- b_1-(eta/n) sum delta^((1))"},
+    {"t":"eq","x":"w_2 <- w_2-(eta/n) h (delta^((2)))^T - eta lambda w_2"},
+    {"t":"eq","x":"b_2 <- b_2-(eta/n) sum delta^((2))"},
+    {"t":"p","x":"Čia Z yra mokymo matrica n × 30: kiekviena eilutė – vienas atvejis. Kode sandaugos rašomos kaip Z transponuota ir Z, kad sutaptų su H × n išdėstymu. Produkcinis mokymas faile train_mlp.m naudoja scaled conjugate gradient (trainscg) su ta pačia architektūra ir tuo pačiu L2 (performParam.regularization = lambda), o ne keturias rankines atnaujinimo eilutes. Rankinis atgalinis sklidimas paliktas faile mlp_backprop_manual.m, kad formulę būtų galima parodyti eilutė po eilutės."},
+
+    {"t":"h2","x":"3.4 Formulės ryšys su konkrečia kodo vieta"},
+    {"t":"tbl","cap":"8 lentelė. MLP formulės narių atitikmenys kode.","rows":[
+      ["Formulės dalis","Kodas","Failas, eil."],
+      ["h = tanh(W1 z + b1)","a1 = W1 * Z' + b1;  h = tanh(a1);","mlp_backprop_manual.m 17-18"],
+      ["p = sigma(w2^T h + b2)","a2 = w2' * h + b2;  p1 = 1./(1+exp(-a2));","mlp_backprop_manual.m 19-20"],
+      ["delta^(2) = p - y","delta2 = p1 - y';","mlp_backprop_manual.m 22"],
+      ["delta^(1) = (1-h.^2) .* (w2 delta^(2))","delta1 = (1 - h.^2) .* (w2 * delta2);","mlp_backprop_manual.m 23"],
+      ["W1 atnaujinimas + L2","W1 = W1 - (eta/n)*(delta1*Z) - eta*lambda*W1;","mlp_backprop_manual.m 24"],
+      ["b1 atnaujinimas","b1 = b1 - (eta/n)*sum(delta1, 2);","mlp_backprop_manual.m 25"],
+      ["w2 atnaujinimas + L2","w2 = w2 - (eta/n)*(h*delta2') - eta*lambda*w2;","mlp_backprop_manual.m 26"],
+      ["b2 atnaujinimas","b2 = b2 - (eta/n)*sum(delta2);","mlp_backprop_manual.m 27"],
+      ["L stebėjimas","hist(t) = kryžminė entropija + (lambda/2)||W||^2","mlp_backprop_manual.m 28-29"],
+      ["Init W1,b1,w2,b2","W1=0.1*randn(H,p); b1=0; w2=0.1*randn(H,1); b2=0;","mlp_backprop_manual.m 11-14"],
+      ["Produkcijos išėjimas","out = net(Z')'; p = out(:,1);  (logsig)","predict_proba.m 65-72"],
+      ["Produkcijos mokymas","patternnet(H,'trainscg'); net=train(net,Z',T,...)","train_mlp.m 22-37"],
+      ["Ansamblis, 5 sėklos","for i=1:5 ... tmp=train_mlp(...,seeds(i),...)","tune_cv.m train_final / fold_score"]
+    ]},
+    {"t":"p","x":"Faile mlp_backprop_manual.m pradžioje yra Kolokviumo 3.3 antraštė: joje užrašyta h = tanh, p = sigma ir delta taisyklė. Kiekvienas skaičiavimo žingsnis užima atskirą eilutę, o komentaruose nurodyti matricų dydžiai (H × n, 1 × n). Faile train_mlp.m yra antraštė, apsauga nuo n = 569, validacijos poaibis imamas tik iš foldo mokymo (divideind, testInd tuščias), o processFcns išjungti, kad požymiai nebūtų skalėje antrą kartą. Failų train_rbfnet.m ir rbf_phi antraštėse pakartota 3.4 formulė. Rankinis atgalinis sklidimas hiperparametrų paieškai nenaudojamas – tai parašyta paties failo komentare, kad nebūtų painiojama su patternnet."},
+
+    {"t":"h2","x":"3.5 RBF tinklas: koeficientai ir uždara atnaujinimo formulė"},
+    {"t":"p","x":"Trečiasis intelektualusis metodas (M3) nenaudoja atgalinio sklidimo. Centrai c_j priklauso R^30; jų yra J = 40 ir jie gaunami k-vidurkių metodu tik iš mokymo matricos Z. Pločiai s_j lygūs kappa padaugintam iš vidutinio atstumo iki dviejų artimiausių kitų centrų; čia kappa = 2. Taikinys ytilde priklauso aibei {−1, +1}. Išėjimo svoriai skaičiuojami uždara ridge formule su lambda = 0,1, o matrica Phi1 gaunama šalia RBF stulpelių pridėjus vienetų stulpelį."},
+    {"t":"eq","x":"phi_j(z)=exp(-||z-c_j||^2/(2 s_j^2))"},
+    {"t":"eq","x":"a(z)=w_0+sum_{j=1}^{40} w_j phi_j(z)"},
+    {"t":"eq","x":"p=1/(1+e^{-a})"},
+    {"t":"tbl","cap":"RBF tinklo koeficientų sužymėjimas.","rows":[
+      ["Koeficientas","Dydis","Reikšmė (models/rbfnet.mat)"],
+      ["J","skaliaras","40"],
+      ["kappa, lambda","skaliarai","2 ir 0,1"],
+      ["c_j (centers)","40 x 30","pilna matrica faile; pirmos eilutės 6 pirmi nariai: 3,79; 0,70; 3,85; 5,10; 1,12; 1,38 (z-skalė)"],
+      ["s_j (widths)","40 x 1","min = 4,238; max = 25,543; vidurkis = 8,540 (visas vektorius 9 lentelėje)"],
+      ["w = [w0; w_1..w_40]","41 x 1","w0=0,324; ||w_{1:40}||=7,049"]
+    ]},
+    {"t":"tbl","cap":"9 lentelė. Visi RBF pločiai s_j (models/rbfnet.mat, model.widths).","rows":[
+      ["Indeksai","s_j reikšmės"],
+      ["1-8","25,543  4,238  7,672  10,498  7,203  5,826  6,335  16,154"],
+      ["9-16","7,324  4,511  6,059  7,220  7,682  12,596  6,316  5,305"],
+      ["17-24","8,233  6,219  9,374  13,726  5,745  4,689  6,530  11,939"],
+      ["25-32","4,780  5,290  8,810  13,012  4,715  19,267  5,876  6,231"],
+      ["33-40","10,339  9,784  9,354  5,276  10,299  6,153  9,538  5,922"]
+    ]},
+    {"t":"tbl","cap":"10 lentelė. Visi RBF išėjimo svoriai w (models/rbfnet.mat, model.w).","rows":[
+      ["Indeksai","w (w0, tada w_1..w_40)"],
+      ["w0 ir 1-7","0,324 | 0,712  -2,219  0,887  -0,490  -0,127  0,746  -1,719"],
+      ["8-15","0,490  -0,083  0,300  -1,107  1,685  -0,280  0,898  0,672"],
+      ["16-23","-1,523  -0,414  1,961  0,857  -0,871  2,329  -0,190  -0,293"],
+      ["24-31","0,855  0,872  -1,054  -1,417  -0,839  1,216  1,146  1,297"],
+      ["32-40","-0,915  -0,787  -0,124  -1,032  0,164  -1,457  1,486  -1,159  -1,598"]
+    ]},
+    {"t":"tbl","cap":"11 lentelė. RBF formulės narių atitikmenys kode.","rows":[
+      ["Formulės dalis","Kodas","Failas, eil."],
+      ["c_j = k-means(Z)","[~, centers] = kmeans(Z, J, ...)","train_rbfnet.m 21"],
+      ["s_j = kappa * d2","widths = kappa * d2;","train_rbfnet.m 26-30"],
+      ["phi_j = exp(-||z-c_j||^2/(2 s_j^2))","Phi(:,j)=exp(-d2./(2*widths(j).^2));","train_rbfnet.m 53-56"],
+      ["w = (Phi1^T Phi1 + lambda I)^{-1} Phi1^T ytilde","w = A \\ (Phi1' * ytilde);","train_rbfnet.m 35-36"],
+      ["a = [1, phi] w;  p = sigma(a)","score = [ones(n,1), Phi]*model.w; p=1./(1+exp(-score));","predict_proba.m 43-45"]
+    ]},
+
+    {"t":"h1","x":"4. Palyginimo protokolas (skaidymas, metrikos, testas neliečiamas)"},
+    {"t":"p","x":"Visi aštuoni užšaldyti modeliai (majority, logreg, svm_rbf, mlp, rbfnet, svm_linear, svm_mean, svm_worst) mokomi tame pačiame 456 atvejų bloke. Hiperparametrai parenkami pagal vidutinį OOF ROC-AUC iš 25 stratifikuotų skaidinių; kiekviename folde scaler mokomas iš naujo. Testo indeksai idxTest dalyvauja tik patikroje (assert), o ne mokyme. Slenksčiai t_cost, t_se98 ir t_youden parenkami tik iš OOF tikimybių funkcijoje choose_threshold.m. Failas freeze.txt įrašomas prieš evaluate_test. Testas (n = 113) skaičiuojamas vieną kartą; antras kvietimas meta klaidą WDBC:Eval:AlreadyUnlocked. Metrikos visiems modeliams tos pačios (metrics.m, Kolokviumo (7)–(9)): jautrumas Se, specifiškumas Sp, Wilson pasikliautinieji intervalai, FN, FP, TP, TN, AUC, Brier ir tikėtina kaina EC = 5*FN + 1*FP. H1 ir H2 rezultatai yra hypotheses.csv (2000 bootstrap pakartojimų ir DeLong testas). H3 vykdoma po testo 10 × 5 įdėtiniu protokolu ir H1 nekeičia."},
+    {"t":"tbl","cap":"12 lentelė. Vidinės paieškos nugalėtojai. Testas paieškoje nenaudotas.","rows":[
+      ["Modelis","OOF nugalėtojas (hp, ne testas)"],
+      ["logreg","lambda = 0,1"],
+      ["svm_rbf","C = 0,3, KernelScale s = 8"],
+      ["mlp","H = 5, lambda = 0,3, sėklos 1:5"],
+      ["rbfnet","J = 40, kappa = 2, lambda = 0,1"],
+      ["svm_linear","C = 0,01 (paprastesnis +/-0,002 nuo max AUC)"]
+    ]},
+
+    {"t":"h1","x":"5. Rezultatai: lentelė, grafikai ir kodėl H1 atmesta"},
+    {"t":"p","x":"Jautrumo ir specifiškumo 95 procentų intervalai paimti iš main_results.csv stulpelių Se_lo, Se_hi, Sp_lo ir Sp_hi. AUC ir Brier tame faile yra tik taškiniai įverčiai: atskirų modelių bootstrap intervalų tiems dviem stulpeliams nėra, todėl jie neišgalvoti. Žemiau pateiktas veikimo taškas t_se98 – tas pats taškas, kuriame preregistruota hipotezė H1."},
+    {"t":"tbl","cap":"13 lentelė. Testas n = 113, taškas t_se98 (main_results.csv, eilutės modelis × t_se98).","rows":[
+      ["Modelis","t","Se","Se 95% PI","Sp","Sp 95% PI","FN","FP","AUC","BS"],
+      ["majority","0,50","0,000","[0,00; 0,08]","1,000","[0,95; 1,00]","42","0","0,500","0,372"],
+      ["logreg","0,21","1,000","[0,92; 1,00]","0,563","[0,45; 0,67]","0","31","0,988","0,072"],
+      ["svm_rbf","0,34","0,952","[0,84; 0,99]","0,930","[0,85; 0,97]","2","5","0,986","0,043"],
+      ["mlp","0,44","0,929","[0,81; 0,98]","0,986","[0,92; 1,00]","3","1","0,993","0,033"],
+      ["rbfnet","0,22","0,952","[0,84; 0,99]","0,887","[0,79; 0,94]","2","8","0,976","0,053"]
+    ]},
+    {"t":"p","x":"Lentelę skaityti taip. Logistinė regresija pagavo visus 42 piktybinius testo atvejus, bet sukėlė 31 klaidingą aliarmą. SVM-RBF praleido 2 piktybinius ir sukėlė 5 klaidingus aliarmus. MLP turi aukščiausią AUC (0,993) ir aukštą specifiškumą, tačiau jautrumas teste yra 0,929 ir nebepasiekia 0,98. OOF taisyklė t_se98 turėjo duoti SVM jautrumą bent 0,98 ir teste; to nėra (main_results.csv, eilutė svm_rbf ir t_se98, stulpeliai Se ir FN). Tai prieštaravimas plano lūkesčiui, o ne tyliai pataisytas slenkstis."},
+
+    {"t":"pic","f":"roc.png","cap":"1 pav. ROC kreivės teste su padidintu viršutiniu kairiuoju kampu (figures_clean/roc.png). AUC reikšmės – main_results.csv.","ex":"Šis grafikas rodo, kaip keturi modeliai skiria piktybinius nuo gerybinių keičiant slenkstį. Kuo kreivė arčiau viršutinio kairiojo kampo, tuo geriau: daug piktybinių pagauta ir mažai gerybinių sujudinta be reikalo. Visos keturios kreivės laikosi aukštai ir toli nuo įstrižainės, todėl atskyrimas iš esmės pavyko. Blogoji pusė ta, kad viršuje kairėje jos beveik sulimpa – iš tolo sunku pasakyti, kuris modelis laimėjo. Todėl H1 ir nesprendžiama pagal gražų plotą po kreive, o pagal konkretų slenksčio tašką, kuriame svarbu nepraleisti piktybinio atvejo."},
+    {"t":"pic","f":"calibration.png","cap":"2 pav. Kalibracija 2×2: dėžučių vidurkiai ir logit kreivė iš cal_a, cal_b (figures_clean/calibration.png; ECE – main_results.csv).","ex":"Čia tikrinama, ar modelio tikimybė „70 procentų piktybinis“ iš tikrųjų reiškia, kad maždaug 7 iš 10 tokių atvejų yra piktybiniai. Kiekvienas langelis – atskiras modelis; taškai yra tikimybės dėžučių vidurkiai. Gerai atrodo SVM-RBF: taškai laikosi arčiau įstrižainės, o ECE mažiausias. Logistinė regresija apačioje per daug rami, o viršuje šokinėja – jos tikimybės kaip rizikos procentas būtų klaidinamesnės. MLP turi mažai taškų, nes daug prognozių susispietę kraštuose. Praktikoje tai reiškia: slenkstį galima sukioti, bet procento kaip diagnozės tikimybės pacientui rodyti neverta."},
+    {"t":"pic","f":"h1_sprendimas.png","cap":"3 pav. H1 konjunkcija: specifiškumo skirtumo dalis priimta, AUC skirtumo dalis atmesta (figures_clean/h1_sprendimas.png; hypotheses.csv).","ex":"Šis paveikslas paaiškina, kodėl H1 galutinai atmesta, nors vienas skirtumas atrodo įspūdingas. Viršuje oranžinis intervalas yra specifiškumo priedas SVM prieš logistinę regresiją: jis toli dešinėje nuo mėlynos 0,03 ribos, todėl ši dalis priimta. Apačioje mėlynas intervalas yra AUC skirtumas: jis kerta raudoną −0,005 ribą, todėl antroji dalis nepraeina. H1 reikalavo abiejų sąlygų kartu. Praktinė išvada paprasta: SVM tikrai sumažino klaidingus aliarmus, bet neįrodė, kad visoje reitingavimo skalėje jis ne prastesnis už logistinę regresiją."},
+
+    {"t":"tbl","cap":"14 lentelė. Hipotezės (hypotheses.csv, visos eilutės). H3 pasikliautinųjų intervalų faile nėra.","rows":[
+      ["Hipotezė","Taškas","PI apačia","PI viršus","accepted"],
+      ["H1_dSp","0,3662","0,2568","0,4786","1"],
+      ["H1_AUC","-0,0020","-0,0074","0,0034","0"],
+      ["H1","0","—","—","0"],
+      ["H2_BS","-0,0291","-0,0496","-0,0078","1"],
+      ["H2_slope","1,097","0,789","2,753","1"],
+      ["H2","1","—","—","1"],
+      ["H3_frac","1","— (NaN faile)","—","1"],
+      ["H3","1","—","—","1"]
+    ]},
+    {"t":"p","x":"H1 atmesta (hypotheses.csv, eilutė H1, stulpelis accepted = 0). Tai galiojantis rezultatas, numatytas plano 4.1 punkte, o ne projekto nesėkmė. Specifiškumo dalis įvykdyta: taškas 0,366 ir intervalo apačia 0,257 abu viršija nulį ir 0,03 ribą (H1_dSp). Hipotezė krenta ant AUC neprastesnumo: DeLong intervalo apačia yra −0,0074 ir ji žemesnė už preregistruotą −0,005 (H1_AUC). SVM pakeitė klaidų balansą – mažiau klaidingų aliarmų, bet du praleisti piktybiniai – ir nepakėlė reitingo virš logistinės regresijos (AUC 0,986 prieš 0,988). H2 priimta: SVM Brier geresnis; kalibracijos nuolydžio intervalas kerta intervalą nuo 0,8 iki 1,25, bet yra platus, nes teste tik 113 atvejų. H3 priimta (frac = 1) ir H1 nekeičia. Po H1 atmetimo prototipu lieka logistinė regresija (logreg, t_se98: FN = 0, FP = 31)."},
+
+    {"t":"h1","x":"6. Klaidų pavyzdžiai"},
+    {"t":"pic","f":"confusion_svm_rbf.png","cap":"4 pav. SVM-RBF painiavos matrica taške t_se98 = 0,34: TN = 66, FP = 5, FN = 2, TP = 40 (figures_clean/confusion_svm_rbf.png; tie patys skaičiai main_results.csv, eilutė svm_rbf ir t_se98).","ex":"Keturi kvadratai – tai, ką SVM-RBF padarė su 113 nematytų atvejų pasirinktu slenksčiu. Gerai: 66 gerybiniai palikti ramybėje ir 40 piktybinių pagauta. Blogai: 2 piktybiniai praleisti ir 5 gerybiniai pažymėti kaip piktybiniai. Praktiškai praleistas piktybinis atvejis brangesnis už perteklinį nerimą, todėl tie du FN svarbesni už penkis FP. Skaičiai kvadratuose sutampa su main_results.csv, todėl grafikas tik parodo tą pačią painiavą, o ne naują eksperimentą."},
+    {"t":"p","x":"Faile error_profile.txt nurodyta: FN = 2, FP = 5. Mokymo aibėje piktybinių medianos yra concave_points_worst = 0,183 ir area_worst = 1333; gerybinių – 0,074 ir 548. Žemiau surašytos visos error_cases.csv eilutės, kad būtų matyti, kurie konkretūs atvejai suklydo."},
+    {"t":"tbl","cap":"15 lentelė. SVM-RBF klaidos teste (error_cases.csv). Slenkstis t = 0,34.","rows":[
+      ["Tipas","abs_idx","p","|p-t|","cp_worst","area_worst","pastaba"],
+      ["FN","41","0,048","0,292","0,111","788","toli nuo t; požymiai arčiau B"],
+      ["FN","264","0,214","0,126","0,086","989","toli nuo t"],
+      ["FP","69","0,776","0,436","0,175","325","mažas plotas, aukšti įgaubos taškai"],
+      ["FP","82","0,508","0,168","0,171","615",""],
+      ["FP","153","0,804","0,464","0,157","381","panašiai kaip 69"],
+      ["FP","291","0,446","0,106","0,102","767",""],
+      ["FP","466","0,385","0,045","0,136","734","vienintelis |p-t|<0,10"]
+    ]},
+    {"t":"p","x":"Abu klaidingai neigiami atvejai nėra slenksčio artefaktas: atstumas iki t didesnis nei 0,10. Tai piktybiniai dariniai, kurių įgaubos taškai ir plotas žemesni už mokymo piktybinių medianą ir arčiau gerybinių. Klaidingai teigiami 69 ir 153 turi prieštaringus požymius: plotas panašus į gerybinį, o įgaubos taškai – į piktybinį. Vėliava margin_flag, kuri įsijungia kai |p − t| < 0,10, pagautų tik atvejį 466, bet ne FN 41. Tai siauresnė apsauga, nei plano 6.5 skyrius tikėjosi nuo ribinio atvejo."},
+
+    {"t":"h1","x":"7. Abliacija ir atsparumo bandymai"},
+    {"t":"pic","f":"se_sp_tse98.png","cap":"5 pav. Jautrumas ir specifiškumas su 95 % Wilson juostomis taške t_se98, penki pagrindiniai modeliai (figures_clean/se_sp_tse98.png; intervalai iš main_results.csv).","ex":"Mėlyni stulpeliai – kiek piktybinių pagauta (jautrumas), oranžiniai – kiek gerybinių palikta ramybėje (specifiškumas). Juodos atkarpos – 95 procentų Wilson intervalai: mažame teste jos plačios, todėl 0,93 ir 0,99 dar nereiškia tikro pranašumo. Gerai matyti kompromisas: logistinė regresija pagauna visus piktybinius, bet specifiškumas krenta iki 0,56; SVM ir MLP atvirkščiai. Punktyras ties 0,98 primena planuotą jautrumo kartelę. Daugumos modelis (B0) yra įspėjimas: be požymių galima turėti tobulą specifiškumą ir praleisti visus piktybinius."},
+    {"t":"pic","f":"cost_curve.png","cap":"6 pav. Tikėtina kaina EC(t) = 5*FN + 1*FP teste: SVM-RBF ir logistinė regresija, vertikalūs t_se98 (figures_clean/cost_curve.png; slenksčių reikšmės iš main_results.csv).","ex":"Horizontalioji ašis – sprendimo slenkstis, vertikalioji – tikėtina kaina, kai praleistas piktybinis kainuoja penkis kartus brangiau nei klaidingas aliarmas. Oranžinė SVM kreivė didžiojoje slenksčių dalyje žemiau mėlynos logistinės: už tą pačią taisyklę SVM sumoka mažiau. Vertikalios linijos žymi kiekvieno modelio t_se98. Dešiniajame krašte abi kreivės kyla staigiai, nes aukštas slenkstis pradeda praleisti piktybinius. Praktikoje tai reiškia, kad 5:1 kaina čia keičia kreivės aukštį, bet nebūtinai pastumia patį slenkstį – tą patvirtina ir A7 lentelė."},
+    {"t":"tbl","cap":"16 lentelė. Abliacija tuo pačiu užšaldytu testu (ablation.csv).","rows":[
+      ["id","Kas keičiama","Se / Sp / AUC","Išvada"],
+      ["A0","dauguma t=0,5","0 / 1 / 0,500; FN=42","be požymių visos M praleidžiamos (ablation.csv A0)"],
+      ["A2 RBF","SVM-RBF t_se98","0,952 / 0,930 / 0,986; dSp PI kerta 0","RBF Sp prieš tiesinį SVM neįrodytas"],
+      ["A2 linear","tiesinis SVM t_se98","0,976 / 0,887 / 0,995","AUC lubos: linear > RBF (ablation.csv A2)"],
+      ["A5 mean10","10 mean požymių","0,976 / 0,718 / 0,975; FP=20","vienų mean požymių nepakanka Sp"],
+      ["A5 worst10","10 worst požymių","1,000 / 0,873 / 0,996; FN=0","diskriminacija jau 10 worst"],
+      ["A5 all30","visi 30 = M1","0,952 / 0,930 / 0,986; FP=5","30 požymių geresnis Sp, ne AUC"],
+      ["A7 1:1..10:1","kaina, tas pats t_cost=0,33","FN=2 FP=5 visiems; EC=7,11,15,25","kainos santykis slenksčio nepastūmė"]
+    ]},
+    {"t":"p","x":"1.4 žingsnio ir A7 eksperimento planas tikėjosi, kad pakeitus kaštų santykį c_FN : c_FP pasislinks optimalus sprendimo slenkstis t, o kartu pasikeis ir klaidų skaičiai FN bei FP. Realybėje gavosi kitaip. Out-of-fold skaičiuojamas slenkstis t_cost visiems keturiems santykiams išėjo tas pats, o testinės klaidų matricos (FN, FP) identiškos. Vienintelis dalykas, kuris pasikeitė, yra perskaičiuota tikėtina kaina EC. Tai matyti ablation.csv faile, eilutėse A7_*, stulpeliuose t, FN, FP ir EC_or_delta."},
+
+    {"t":"h1","x":"8. Paleidimo instrukcija, priklausomybės, sėklos, viena komanda"},
+    {"t":"p","x":"Aplinka: MATLAB R2026a, Statistics and Machine Learning Toolbox ir Deep Learning Toolbox (patternnet). Projekto šaknis – katalogas Kruties_Navikas. Pirmą kartą paleidus, get_wdbc parsiunčia wdbc.data iš UCI į data/raw/; jei failas jau yra ir nėra tuščias, pakartotinai nesiunčiama. Fiksuotos sėklos surašytos config.m: cfg.seed = 42 valdo skaidymą, vidinį CV ir k-vidurkius; MLP naudoja sėklas 1–5. Visa grandinė paleidžiama viena komanda run_all iš Command Window, stovint projekto šaknyje. Ji paleidžia automatinius testus, prireikus mokymą, freeze.txt, vieną evaluate_test, predict_case pavyzdį ir H3. Jei reports/test_unlocked.flag jau yra, evaluate_test praleidžiama. Pristatymo grafikai (langai lieka atidaryti) gaunami komanda make_report_plots. Patikros: runtests('tests') – nutekėjimas, skaidinys, metrikos, predict_case. Vieno atvejo prognozė po testo atrakinimo: predict_case('data/examples/one_case.csv')."},
+
+    {"t":"h1","x":"9. AI naudojimo žurnalas"},
+    {"t":"tbl","cap":"17 lentelė. Svarbiausios užklausos (reports/ai_usage.md).","rows":[
+      ["Užklausa / etapas","Priimta","Atmesta"],
+      ["5 etapų MATLAB vamzdis pagal planą","katalogai, run_all, freeze, lock","HP ir slenkstis pagal testą"],
+      ["Scaler ir skaidinys","mu tik iš 456; 113/456 kaip cvpartition","scaler kai n = 569; rankinis 114/455 kirpimas; eilučių su nuliais metimas"],
+      ["HP taisyklė","max OOF AUC, tada +/-0,002 paprastesnis","eilinis 'pirmas paprastas tinklelyje' (AI klaida 1)"],
+      ["Formulių numeriai","Kolokviumo (1)–(9) komentaruose","plano (6)–(24) numeriai (AI klaida 2)"],
+      ["H1 interpretacija","accepted=0 palikta; prototipas LR","'SVM laimėjo, nes dSp didelis'; H3 perrašo H1"],
+      ["App Designer .mlapp","predict_case.m pakanka","neprivaloma 8 lentelė"]
+    ]},
+    {"t":"p","x":"Buvo dvi konkrečios AI klaidos, ir abi patikrintos prieš atrakinant testą. Pirma: tune_cv iš pradžių ėjo tinklu ir galėjo palikti paprastesnę konfigūraciją su žemesniu AUC nei viso tinklo maksimumas. Patikra – palyginti viso tinklo aucMean; taisyklė pakeista į „tarp AUC ne blogesnių kaip maksimumas minus 0,002 imti paprastesnį“ dar prieš evaluate_test. Antra: komentaruose buvo 25 puslapių plano numeriai (6)–(24), o Kolokviumas naudoja (1)–(9). Patikra – gretutinai atidarytas Kolokviumo dalis.pdf ir modulių antraštės; komentarai perrašyti prieš lock. Papildomas įgyvendinimo lūžis: error_analysis antraštėje dubliavosi area_worst. Tai pataisyta tada, kai test_unlocked.flag dar neegzistavo, todėl testas nebuvo atrakintas antrą kartą."},
+
+    {"t":"h1","x":"10. Išvados"},
+    {"t":"p","x":"Pateiktas veikiantis ir atkuriamas WDBC klasifikatorius: duomenų grandinė be nutekėjimo, du pradiniai metodai, trys intelektualiųjų sistemų metodai ir tas pats užšaldytas testas. MLP ir RBF koeficientai sužymėti dydžiu ir reikšme; išėjimo ir atgalinio sklidimo formulės išvestos ir susietos su tiksliomis MATLAB eilutėmis; moduliuose yra antraštės ir tvarkinga struktūra. H1 atmesta dėl AUC neprastesnumo, nors specifiškumo skirtumas didelis – tai galiojantis rezultatas, todėl prototipas yra logistinė regresija. H2 ir H3 priimtos. RBF branduolys AUC nepakėlė virš tiesinio SVM, o kaštų santykis 5:1 slenksčio nepastūmė. Ribos aiškios: teste yra tik 42 piktybiniai atvejai; OOF taisyklė Se >= 0,98 savaime nepersikelia į testą; teigiamos prognozės vertė (PPV) neperkeliama į kitą paplitimą; išorinės kohortos nėra. Sistema tinka mokomajam sprendimo palaikymui, o ne diagnostikai."},
+
+    {"t":"h1","x":"Literatūra"},
+    {"t":"lit","x":"1. Wolberg, W., Mangasarian, O., Street, N., Street, W. (1993). Breast Cancer Wisconsin (Diagnostic) [Dataset]. UCI. https://doi.org/10.24432/C5DW2B"},
+    {"t":"lit","x":"2. Street, W. N., Wolberg, W. H., Mangasarian, O. L. (1993). Nuclear feature extraction for breast tumor diagnosis. Proc. SPIE, 1905, 861–870. https://doi.org/10.1117/12.148698"},
+    {"t":"lit","x":"3. Mangasarian, O. L., Street, W. N., Wolberg, W. H. (1995). Breast cancer diagnosis and prognosis via linear programming. Operations Research, 43(4), 570–577. https://doi.org/10.1287/opre.43.4.570"},
+    {"t":"lit","x":"5. Elkan, C. (2001). The foundations of cost-sensitive learning. IJCAI, 973–978."},
+    {"t":"lit","x":"6. Cox, D. R. (1958). The regression analysis of binary sequences. JRSS B, 20(2), 215–242."},
+    {"t":"lit","x":"9. Cortes, C., Vapnik, V. (1995). Support-vector networks. Machine Learning, 20, 273–297."},
+    {"t":"lit","x":"13. Cybenko, G. (1989). Approximation by superpositions of a sigmoidal function. MCSS, 2, 303–314."},
+    {"t":"lit","x":"14. Rumelhart, D. E., Hinton, G. E., Williams, R. J. (1986). Learning representations by back-propagating errors. Nature, 323, 533–536."},
+    {"t":"lit","x":"15. Moody, J., Darken, C. J. (1989). Fast learning in networks of locally-tuned processing units. Neural Computation, 1(2), 281–294."},
+    {"t":"lit","x":"16. Platt, J. (1999). Probabilistic outputs for support vector machines. In Advances in Large Margin Classifiers. MIT Press."},
+    {"t":"lit","x":"21. DeLong, E. R., DeLong, D. M., Clarke-Pearson, D. L. (1988). Comparing the areas under two or more correlated ROC curves. Biometrics, 44(3), 837–845."},
+    {"t":"lit","x":"22. Brier, G. W. (1950). Verification of forecasts expressed in terms of probability. Monthly Weather Review, 78(1), 1–3."}
+  ]
+}

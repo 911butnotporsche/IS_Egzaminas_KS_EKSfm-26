@@ -1,0 +1,15 @@
+ALL FITS DONE. Test still locked until evaluate_test.m.
+split: train=456 (170 M / 286 B), test=113 (42 M / 71 B)
+cost=5:1  H1_dSp=0.03  se_target=0.98  inner_cv=25
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\reports\preregistration.md  SHA-256=e13bfa1797a52c7d61690209f7631b1299655411e1b38c8de930858622add4c2
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat  SHA-256=bc92098ed8cb2b955aafc309dc966a8703367361a0151e547f7a08c39437b0bf
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\config.m  SHA-256=bb5f0d0420707affee52997e9d96dcba04531fda3ac0076b0d0c3fceb75255d7
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\models\majority.mat  SHA-256=5a9c45e22fe541f80fe3176e9d2a875a699d3406afd34a5f3bc4b50f2f62a6c9
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\models\logreg.mat  SHA-256=6fae6641d4ecef68122d5caf4bc5f70a514691864e513e2322ddee21e0063a58
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\models\svm_rbf.mat  SHA-256=affa18a45899c956334bbd2042fb342c4437e36621209976369a199234106070
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\models\mlp.mat  SHA-256=05d05643d44a6f3f8909b0761325746955d9d3f163b18c8862b3462a57b1cc08
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\models\rbfnet.mat  SHA-256=b18754d6f0f096e5647252e8c284093d0bbcc659e76781d59bb23f2febaf3ca1
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\models\svm_linear.mat  SHA-256=5ab918cec7004151589f5e2806f9dddad77f3fb561c6e8e1c48cc4a083e9726e
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\models\svm_mean.mat  SHA-256=cb29180f72e65a17f1d6f36ec92241d3c3e1599cf2c77e36da1d46601c0d7450
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\models\svm_worst.mat  SHA-256=c471f8ae0a591206dc28ff54904507e734169238bab8855983bd49837524341f
+C:\Users\Kamil\Documents\2026-09\Egzaminas\Kruties_Navikas\models\thresholds.json  SHA-256=7a49e8e016208ec60057745710cfe310bddfbd36b0d4b4d762c12f9cea89b094
