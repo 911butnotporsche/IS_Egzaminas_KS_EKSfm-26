@@ -1,0 +1,28 @@
+ALL FITS DONE. Test still locked until evaluate_test.m.
+split: train=455 (M=170 B=285), test=114 (M=42 B=72)
+cost=5:1  H1_dSp=0.03  se_target=0.98  inner_cv=25
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\preregistration.md  SHA-256=22c68defcf17f2f17c3b15cf8dc0f3e22fc306335f8e54c3dbb7e01a3c7179fc
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat  SHA-256=3c33192d37de90ffd1bf1918cf20cd2ed6917b3028d7cb18e0932b790ffedb4e
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\config.m  SHA-256=9c7439767a37e8f9cad376b8d1864a1bc0a207aa22053825048ef345582e6d70
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\majority.mat  SHA-256=782e7076dfb26624b37d2232d894ab470ae1ae84bd39bd0b914e4bd721d31967
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\logreg.mat  SHA-256=29d00e88ce43495218426a71bfebefdf208c7f28d9ded5a3f8af5748e7fcb43c
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\svm_rbf.mat  SHA-256=0e5f4b84baf2ff2ea832dac804d98eb23bf32c8205ffea1730fbc85f0a9ad996
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\mlp.mat  SHA-256=c180ce0c8818a576aa59a1d5d1f50fef2713fe85b16f5e45b695c8fcd2a454ca
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\rbfnet.mat  SHA-256=203017d6a93bc93d874b9dc4a6c7128e2e51bbfbb9af14b9d3de36d91e62e873
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\svm_poly.mat  SHA-256=98c2efa83ae49ee1560633ef9254fc67ef0fa86522b10365fd31bc7b41fe6d9f
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\ensemble.mat  SHA-256=584d434065f4085ffe8dd869658a53891fbf4809b95e9183c8033de8ad76bd23
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\ensemble_noselect.mat  SHA-256=c28b5c9ca317830a7442ea2dda1278b129724739f8c7d0b458b54c0d25271df0
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\svm_linear.mat  SHA-256=842cacb372ca607651e4abd6f5f6cd27f95b54995a0a8c3eafa8a6fe5eaae985
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\svm_mean.mat  SHA-256=d88999ce5f88b986031f3643909adae247c7c1bfad2ef417dc304e6435da5db8
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\svm_worst.mat  SHA-256=a5f36250b59d35b5b443d4fcb278eb8ba310f80ab2b0777e3c1e642114588021
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\thresholds.json  SHA-256=7a49e8e016208ec60057745710cfe310bddfbd36b0d4b4d762c12f9cea89b094
+
+TEST UNLOCKED via evaluate_test.m. Do not re-run.
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\results_test.csv  SHA-256=a6a191768afd1f9d6f08eb7d5ca0bd86b95e187018edfc028de7e6ecf3d704be
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\ablation_results.csv  SHA-256=16795e3d6310c95d8e59e916ccdc03f4bcc7f769f2b0ea18ee85f26d019185de
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\robustness_results.csv  SHA-256=e9e7eac9b4d7f3ae88115f0175c4e614b1be351f7474b85132756e70f476383d
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\tables\main_results.csv  SHA-256=afa38a1e701092862092fbb2d7cf5363253df81ca5fa5540511c8686b6c50cc7
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\tables\hypotheses.csv  SHA-256=6cd57b271f7f159fa6da80f9489857fd3f98339f652434dae6bda09a10112906
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\tables\ablation.csv  SHA-256=16795e3d6310c95d8e59e916ccdc03f4bcc7f769f2b0ea18ee85f26d019185de
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\error_cases.csv  SHA-256=79f096533ea3eda697bead75066a047e43b1fad975afdef97e537eabd8873b6a
+C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\test_unlocked.flag  SHA-256=401ca27011a2475b8cc5868b43ff11fee7cac2acc84e7909f3af292704bd5e27

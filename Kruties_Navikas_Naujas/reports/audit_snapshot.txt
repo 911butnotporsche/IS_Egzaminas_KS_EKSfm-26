@@ -1,0 +1,45 @@
+seed_file=42
+n=569 nTrain=455 nTest=114 overlap=0
+train M=170 B=285
+test M=42 B=72
+cover=569
+
+== main_results identity ==
+identity_rows=33
+pred_n=114 pred_M=42 pred_B=72
+
+== recompute t_se98 ==
+majority t=0.5000 Se=0.000000 Sp=1.000000 FN=42 FP=0 TP=0 TN=72 n=114 AUC=0.500000 BS=0.368421
+logreg t=0.2200 Se=0.952381 Sp=0.944444 FN=2 FP=4 TP=40 TN=68 n=114 AUC=0.982804 BS=0.035219
+svm_rbf t=0.1800 Se=0.952381 Sp=0.944444 FN=2 FP=4 TP=40 TN=68 n=114 AUC=0.981481 BS=0.037696
+mlp t=0.3400 Se=0.928571 Sp=0.972222 FN=3 FP=2 TP=39 TN=70 n=114 AUC=0.985780 BS=0.034450
+rbfnet t=0.2200 Se=0.928571 Sp=0.916667 FN=3 FP=6 TP=39 TN=66 n=114 AUC=0.975529 BS=0.044977
+ensemble t=0.3300 Se=0.928571 Sp=0.944444 FN=3 FP=4 TP=39 TN=68 n=114 AUC=0.977183 BS=0.047026
+B0_p_unique=1e-15 prior_formula_170_455=0.373626 BS_if_prior=0.232714 BS_if_zero=0.368421
+
+== M4 ==
+nTrain=455 use_selection=1
+weights=[0.5833 0.3333 0.08333]
+weights_equal=[0.3333 0.3333 0.3333]
+hp d=3 s=4 C=1
+lr_lambda=0.1 mlp_H=5 mlp_lambda=0.3
+t_se98=0.33 t_cost=0.33 se_target_met=1
+feat_cols=[2 5 6 7 8 9 10 11 12 15 16 17 18 19 20 22 23 25 26 27 28 29 30]
+kept=texture_mean smoothness_mean compactness_mean concavity_mean concave_points_mean symmetry_mean fractal_dimension_mean radius_se texture_se smoothness_se compactness_se concavity_se concave_points_se symmetry_se fractal_dimension_se texture_worst perimeter_worst smoothness_worst compactness_worst concavity_worst concave_points_worst symmetry_worst fractal_dimension_worst 
+members=svm_poly,mlp,logreg
+member svm_poly kind=svm_poly has_platt=1
+  platt A=-2.92245 B=0.70163
+member mlp kind=mlp has_platt=1
+  platt A=-1.09414 B=0.951679
+member logreg kind=logreg has_platt=1
+  platt A=-2.55277 B=1.93925
+
+== model nTrain ==
+majority nTrain=455
+logreg nTrain=455
+svm_rbf nTrain=455
+mlp nTrain=455
+rbfnet nTrain=455
+svm_poly nTrain=455
+ensemble nTrain=455
+ensemble_noselect nTrain=455

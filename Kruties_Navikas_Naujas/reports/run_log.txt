@@ -1,0 +1,560 @@
+
+=== 1 etapas: duomenu gavimas ===
+get_wdbc: jau yra C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\raw\wdbc.data (124103 B), pakartotinai nesiunciu.
+get_wdbc: jau yra C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\raw\wdbc.names (4708 B), pakartotinai nesiunciu.
+get_wdbc: wdbc.data SHA-256 = d606af411f3e5be8a317a5a8b652b425aaf0ff38ca683d5327ffff94c3695f4a
+get_wdbc: wdbc.names SHA-256 = 840e04e3f20f8a5b326892f3b9cbc01c4cd6f7e6c597630b701ef6c0ac79f5ef
+load_wdbc: irasyta C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\wdbc.mat (X 569x30, M=212, B=357)
+
+=== 2 etapas: skaidymas ir preprocessing ===
+make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+pasalintas senas modelis logreg.mat (nTrain=456, dabar 455)
+pasalintas senas modelis majority.mat (nTrain=456, dabar 455)
+pasalintas senas modelis mlp.mat (nTrain=456, dabar 455)
+pasalintas senas modelis rbfnet.mat (nTrain=456, dabar 455)
+pasalintas senas modelis svm_linear.mat (nTrain=456, dabar 455)
+pasalintas senas modelis svm_mean.mat (nTrain=456, dabar 455)
+pasalintas senas modelis svm_rbf.mat (nTrain=456, dabar 455)
+pasalintas senas modelis svm_worst.mat (nTrain=456, dabar 455)
+test_unlocked.flag pasalinta: skaidinys pasikeite, testas vel uzrakintas.
+
+=== Testai pries 4 etapa ===
+Setting up ProjectFixture
+Done setting up ProjectFixture: Opened project 'IS_Egzaminas'.
+__________
+
+Running test_lr_gradient
+..
+Done test_lr_gradient
+__________
+
+Running test_metrics
+.
+Done test_metrics
+__________
+
+Running test_no_leakage
+make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+........
+Done test_no_leakage
+__________
+
+Running test_predict_case
+
+================================================================================
+test_predict_case/testMatchesEvaluateTest was filtered.
+================================================================================
+.
+================================================================================
+test_predict_case/testRejectsBadShape was filtered.
+================================================================================
+.
+Done test_predict_case
+__________
+
+Running test_split
+make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+.make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+.make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+.make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+.
+Done test_split
+__________
+
+Running test_svm_decision
+..
+Done test_svm_decision
+__________
+
+Tearing down ProjectFixture
+Done tearing down ProjectFixture: Closed project 'IS_Egzaminas'.
+__________
+
+Running test_select_features
+...
+Done test_select_features
+__________
+
+Running test_svm_poly
+.
+Done test_svm_poly
+__________
+
+Failure Summary:
+
+     Name                                       Failed  Incomplete  Reason(s)
+    ========================================================================================
+     test_predict_case/testMatchesEvaluateTest              X       Filtered by assumption.
+    ----------------------------------------------------------------------------------------
+     test_predict_case/testRejectsBadShape                  X       Filtered by assumption.
+                                     Name                                      Passed    Failed
+    _______________________________________________________________________    ______    ______
+
+    {'test_lr_gradient/testFiniteDifferenceMatchesGradient'               }    true      false 
+    {'test_lr_gradient/testCoefficientsMatchFitclinear'                   }    true      false 
+    {'test_metrics/testHandEightCases'                                    }    true      false 
+    {'test_no_leakage/testFitSignatureRejectsIndicesAndFullMatrix'        }    true      false 
+    {'test_no_leakage/testMuSigmaFromTrainOnly'                           }    true      false 
+    {'test_no_leakage/testApplyScalerSourceDoesNotFit'                    }    true      false 
+    {'test_no_leakage/testFitScalerSourceHasNoIdxTest'                    }    true      false 
+    {'test_no_leakage/testInnerCvRefitsScalerEachFold'                    }    true      false 
+    {'test_no_leakage/testOofScoreComesFromUnseenFold'                    }    true      false 
+    {'test_no_leakage/testEvaluateTestRefusesUnlockedMetricsWithoutModels'}    true      false 
+    {'test_no_leakage/testRunAllFreezesBeforeEvaluate'                    }    true      false 
+    {'test_predict_case/testMatchesEvaluateTest'                          }    false     false 
+    {'test_predict_case/testRejectsBadShape'                              }    false     false 
+    {'test_split/testHoldOutSizesAndDisjoint'                             }    true      false 
+    {'test_split/testStratifiedClassCounts'                               }    true      false 
+    {'test_split/testSeed42Reproducible'                                  }    true      false 
+    {'test_split/testSplitFileContainsOnlyIndices'                        }    true      false 
+    {'test_svm_decision/testDecisionMatchesPredict'                       }    true      false 
+    {'test_svm_decision/testPlattVsFitPosterior'                          }    true      false 
+    {'test_select_features/testDropsWeakerMemberOfCollinearPair'          }    true      false 
+    {'test_select_features/testRejectsFullWdbcMatrix'                     }    true      false 
+    {'test_select_features/testTrainRowsOnlyChangeTheChoice'              }    true      false 
+    {'test_svm_poly/testDecisionMatchesPredict'                           }    true      false 
+
+
+=== 3 etapas (truksta modeliu) ===
+tune_cv majority: 1 konfig. × 25 skaidiniai
+  [1/1] auc=0.5000 dummy=1
+tune_cv majority [majority]: geriausias AUC=0.5000 dummy=1 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\majority.mat
+tune_cv logreg: 5 konfig. × 25 skaidiniai
+  [1/5] auc=0.9939 lambda=0.0001
+  [2/5] auc=0.9966 lambda=0.001
+  [3/5] auc=0.9972 lambda=0.01
+  [4/5] auc=0.9965 lambda=0.1
+  [5/5] auc=0.9925 lambda=1
+tune_cv logreg [logreg]: geriausias AUC=0.9965 lambda=0.1 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\logreg.mat
+tune_cv svm_rbf: 49 konfig. × 25 skaidiniai
+  [1/49] auc=0.9811 C=0.1, s=1
+  [2/49] auc=0.9811 C=0.3, s=1
+  [3/49] auc=0.9812 C=1, s=1
+  [4/49] auc=0.9817 C=3, s=1
+  [5/49] auc=0.9817 C=10, s=1
+  [6/49] auc=0.9817 C=30, s=1
+  [7/49] auc=0.9817 C=100, s=1
+  [8/49] auc=0.9840 C=0.1, s=2
+  [9/49] auc=0.9858 C=0.3, s=2
+  [10/49] auc=0.9892 C=1, s=2
+  [11/49] auc=0.9903 C=3, s=2
+  [12/49] auc=0.9902 C=10, s=2
+  [13/49] auc=0.9902 C=30, s=2
+  [14/49] auc=0.9902 C=100, s=2
+  [15/49] auc=0.9853 C=0.1, s=3
+  [16/49] auc=0.9916 C=0.3, s=3
+  [17/49] auc=0.9948 C=1, s=3
+  [18/49] auc=0.9949 C=3, s=3
+  [19/49] auc=0.9947 C=10, s=3
+  [20/49] auc=0.9947 C=30, s=3
+  [21/49] auc=0.9947 C=100, s=3
+  [22/49] auc=0.9911 C=0.1, s=5
+  [23/49] auc=0.9957 C=0.3, s=5
+  [24/49] auc=0.9967 C=1, s=5
+  [25/49] auc=0.9974 C=3, s=5
+  [26/49] auc=0.9975 C=10, s=5
+  [27/49] auc=0.9975 C=30, s=5
+  [28/49] auc=0.9975 C=100, s=5
+  [29/49] auc=0.9939 C=0.1, s=8
+  [30/49] auc=0.9966 C=0.3, s=8
+  [31/49] auc=0.9972 C=1, s=8
+  [32/49] auc=0.9973 C=3, s=8
+  [33/49] auc=0.9975 C=10, s=8
+  [34/49] auc=0.9970 C=30, s=8
+  [35/49] auc=0.9969 C=100, s=8
+  [36/49] auc=0.9934 C=0.1, s=12
+  [37/49] auc=0.9962 C=0.3, s=12
+  [38/49] auc=0.9968 C=1, s=12
+  [39/49] auc=0.9972 C=3, s=12
+  [40/49] auc=0.9967 C=10, s=12
+  [41/49] auc=0.9963 C=30, s=12
+  [42/49] auc=0.9960 C=100, s=12
+  [43/49] auc=0.9937 C=0.1, s=20
+  [44/49] auc=0.9947 C=0.3, s=20
+  [45/49] auc=0.9965 C=1, s=20
+  [46/49] auc=0.9968 C=3, s=20
+  [47/49] auc=0.9970 C=10, s=20
+  [48/49] auc=0.9961 C=30, s=20
+  [49/49] auc=0.9961 C=100, s=20
+tune_cv svm_rbf [svm_rbf]: geriausias AUC=0.9962 C=0.3, s=12 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\svm_rbf.mat
+tune_cv mlp: 9 konfig. × 25 skaidiniai
+  [1/9] auc=0.9968 H=5, lambda=0
+  [2/9] auc=0.9968 H=10, lambda=0
+  [3/9] auc=0.9970 H=20, lambda=0
+  [4/9] auc=0.9966 H=5, lambda=0.1
+  [5/9] auc=0.9968 H=10, lambda=0.1
+  [6/9] auc=0.9970 H=20, lambda=0.1
+  [7/9] auc=0.9969 H=5, lambda=0.3
+  [8/9] auc=0.9966 H=10, lambda=0.3
+  [9/9] auc=0.9969 H=20, lambda=0.3
+tune_cv mlp [mlp]: geriausias AUC=0.9969 H=5, lambda=0.3 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\mlp.mat
+tune_cv rbfnet: 36 konfig. × 25 skaidiniai
+  [1/36] auc=0.9879 J=10, kappa=0.5, lambda=0.001
+  [2/36] auc=0.9894 J=20, kappa=0.5, lambda=0.001
+  [3/36] auc=0.9923 J=40, kappa=0.5, lambda=0.001
+  [4/36] auc=0.9929 J=80, kappa=0.5, lambda=0.001
+  [5/36] auc=0.9940 J=10, kappa=1, lambda=0.001
+  [6/36] auc=0.9958 J=20, kappa=1, lambda=0.001
+  [7/36] auc=0.9966 J=40, kappa=1, lambda=0.001
+  [8/36] auc=0.9974 J=80, kappa=1, lambda=0.001
+  [9/36] auc=0.9956 J=10, kappa=2, lambda=0.001
+  [10/36] auc=0.9960 J=20, kappa=2, lambda=0.001
+  [11/36] auc=0.9969 J=40, kappa=2, lambda=0.001
+  [12/36] auc=0.9974 J=80, kappa=2, lambda=0.001
+  [13/36] auc=0.9880 J=10, kappa=0.5, lambda=0.1
+  [14/36] auc=0.9894 J=20, kappa=0.5, lambda=0.1
+  [15/36] auc=0.9926 J=40, kappa=0.5, lambda=0.1
+  [16/36] auc=0.9931 J=80, kappa=0.5, lambda=0.1
+  [17/36] auc=0.9939 J=10, kappa=1, lambda=0.1
+  [18/36] auc=0.9960 J=20, kappa=1, lambda=0.1
+  [19/36] auc=0.9966 J=40, kappa=1, lambda=0.1
+  [20/36] auc=0.9975 J=80, kappa=1, lambda=0.1
+  [21/36] auc=0.9955 J=10, kappa=2, lambda=0.1
+  [22/36] auc=0.9959 J=20, kappa=2, lambda=0.1
+  [23/36] auc=0.9965 J=40, kappa=2, lambda=0.1
+  [24/36] auc=0.9971 J=80, kappa=2, lambda=0.1
+  [25/36] auc=0.9873 J=10, kappa=0.5, lambda=1
+  [26/36] auc=0.9892 J=20, kappa=0.5, lambda=1
+  [27/36] auc=0.9931 J=40, kappa=0.5, lambda=1
+  [28/36] auc=0.9946 J=80, kappa=0.5, lambda=1
+  [29/36] auc=0.9935 J=10, kappa=1, lambda=1
+  [30/36] auc=0.9955 J=20, kappa=1, lambda=1
+  [31/36] auc=0.9965 J=40, kappa=1, lambda=1
+  [32/36] auc=0.9970 J=80, kappa=1, lambda=1
+  [33/36] auc=0.9932 J=10, kappa=2, lambda=1
+  [34/36] auc=0.9951 J=20, kappa=2, lambda=1
+  [35/36] auc=0.9958 J=40, kappa=2, lambda=1
+  [36/36] auc=0.9963 J=80, kappa=2, lambda=1
+tune_cv rbfnet [rbfnet]: geriausias AUC=0.9956 J=10, kappa=2, lambda=0.001 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\rbfnet.mat
+tune_cv svm_poly: 8 konfig. × 25 skaidiniai
+  [1/8] auc=0.9783 d=2, s=0.5, C=1
+  [2/8] auc=0.9791 d=3, s=0.5, C=1
+  [3/8] auc=0.9871 d=2, s=1, C=1
+  [4/8] auc=0.9879 d=3, s=1, C=1
+  [5/8] auc=0.9922 d=2, s=2, C=1
+  [6/8] auc=0.9943 d=3, s=2, C=1
+  [7/8] auc=0.9964 d=2, s=4, C=1
+  [8/8] auc=0.9984 d=3, s=4, C=1
+tune_cv svm_poly [svm_poly]: geriausias AUC=0.9964 d=2, s=4, C=1 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\svm_poly.mat
+
+=== 4 etapas A: A2/A5 mokymas (testas dar uzrakintas) ===
+tune_cv svm_linear: 7 konfig. × 25 skaidiniai
+  [1/7] auc=0.9967 C=0.01
+  [2/7] auc=0.9971 C=0.03
+  [3/7] auc=0.9967 C=0.1
+  [4/7] auc=0.9959 C=0.3
+  [5/7] auc=0.9956 C=1
+  [6/7] auc=0.9925 C=3
+  [7/7] auc=0.9907 C=10
+tune_cv svm_linear [svm_linear]: geriausias AUC=0.9967 C=0.01 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\svm_linear.mat
+tune_cv svm_rbf: 49 konfig. × 25 skaidiniai
+  [1/49] auc=0.9672 C=0.1, s=1
+  [2/49] auc=0.9673 C=0.3, s=1
+  [3/49] auc=0.9641 C=1, s=1
+  [4/49] auc=0.9638 C=3, s=1
+  [5/49] auc=0.9655 C=10, s=1
+  [6/49] auc=0.9655 C=30, s=1
+  [7/49] auc=0.9655 C=100, s=1
+  [8/49] auc=0.9810 C=0.1, s=2
+  [9/49] auc=0.9833 C=0.3, s=2
+  [10/49] auc=0.9832 C=1, s=2
+  [11/49] auc=0.9796 C=3, s=2
+  [12/49] auc=0.9745 C=10, s=2
+  [13/49] auc=0.9732 C=30, s=2
+  [14/49] auc=0.9714 C=100, s=2
+  [15/49] auc=0.9850 C=0.1, s=3
+  [16/49] auc=0.9874 C=0.3, s=3
+  [17/49] auc=0.9876 C=1, s=3
+  [18/49] auc=0.9881 C=3, s=3
+  [19/49] auc=0.9846 C=10, s=3
+  [20/49] auc=0.9800 C=30, s=3
+  [21/49] auc=0.9796 C=100, s=3
+  [22/49] auc=0.9865 C=0.1, s=5
+  [23/49] auc=0.9880 C=0.3, s=5
+  [24/49] auc=0.9891 C=1, s=5
+  [25/49] auc=0.9901 C=3, s=5
+  [26/49] auc=0.9914 C=10, s=5
+  [27/49] auc=0.9893 C=30, s=5
+  [28/49] auc=0.9845 C=100, s=5
+  [29/49] auc=0.9875 C=0.1, s=8
+  [30/49] auc=0.9877 C=0.3, s=8
+  [31/49] auc=0.9889 C=1, s=8
+  [32/49] auc=0.9889 C=3, s=8
+  [33/49] auc=0.9901 C=10, s=8
+  [34/49] auc=0.9922 C=30, s=8
+  [35/49] auc=0.9922 C=100, s=8
+  [36/49] auc=0.9875 C=0.1, s=12
+  [37/49] auc=0.9879 C=0.3, s=12
+  [38/49] auc=0.9877 C=1, s=12
+  [39/49] auc=0.9885 C=3, s=12
+  [40/49] auc=0.9878 C=10, s=12
+  [41/49] auc=0.9894 C=30, s=12
+  [42/49] auc=0.9920 C=100, s=12
+  [43/49] auc=0.9876 C=0.1, s=20
+  [44/49] auc=0.9876 C=0.3, s=20
+  [45/49] auc=0.9879 C=1, s=20
+  [46/49] auc=0.9875 C=3, s=20
+  [47/49] auc=0.9879 C=10, s=20
+  [48/49] auc=0.9868 C=30, s=20
+  [49/49] auc=0.9877 C=100, s=20
+tune_cv svm_rbf [svm_mean]: geriausias AUC=0.9914 C=10, s=5 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\svm_mean.mat
+tune_cv svm_rbf: 49 konfig. × 25 skaidiniai
+  [1/49] auc=0.9881 C=0.1, s=1
+  [2/49] auc=0.9881 C=0.3, s=1
+  [3/49] auc=0.9885 C=1, s=1
+  [4/49] auc=0.9879 C=3, s=1
+  [5/49] auc=0.9880 C=10, s=1
+  [6/49] auc=0.9882 C=30, s=1
+  [7/49] auc=0.9882 C=100, s=1
+  [8/49] auc=0.9935 C=0.1, s=2
+  [9/49] auc=0.9958 C=0.3, s=2
+  [10/49] auc=0.9960 C=1, s=2
+  [11/49] auc=0.9938 C=3, s=2
+  [12/49] auc=0.9929 C=10, s=2
+  [13/49] auc=0.9930 C=30, s=2
+  [14/49] auc=0.9923 C=100, s=2
+  [15/49] auc=0.9943 C=0.1, s=3
+  [16/49] auc=0.9957 C=0.3, s=3
+  [17/49] auc=0.9967 C=1, s=3
+  [18/49] auc=0.9965 C=3, s=3
+  [19/49] auc=0.9950 C=10, s=3
+  [20/49] auc=0.9946 C=30, s=3
+  [21/49] auc=0.9936 C=100, s=3
+  [22/49] auc=0.9931 C=0.1, s=5
+  [23/49] auc=0.9948 C=0.3, s=5
+  [24/49] auc=0.9961 C=1, s=5
+  [25/49] auc=0.9961 C=3, s=5
+  [26/49] auc=0.9957 C=10, s=5
+  [27/49] auc=0.9955 C=30, s=5
+  [28/49] auc=0.9943 C=100, s=5
+  [29/49] auc=0.9910 C=0.1, s=8
+  [30/49] auc=0.9933 C=0.3, s=8
+  [31/49] auc=0.9947 C=1, s=8
+  [32/49] auc=0.9950 C=3, s=8
+  [33/49] auc=0.9950 C=10, s=8
+  [34/49] auc=0.9949 C=30, s=8
+  [35/49] auc=0.9947 C=100, s=8
+  [36/49] auc=0.9903 C=0.1, s=12
+  [37/49] auc=0.9919 C=0.3, s=12
+  [38/49] auc=0.9935 C=1, s=12
+  [39/49] auc=0.9943 C=3, s=12
+  [40/49] auc=0.9950 C=10, s=12
+  [41/49] auc=0.9951 C=30, s=12
+  [42/49] auc=0.9945 C=100, s=12
+  [43/49] auc=0.9900 C=0.1, s=20
+  [44/49] auc=0.9900 C=0.3, s=20
+  [45/49] auc=0.9921 C=1, s=20
+  [46/49] auc=0.9935 C=3, s=20
+  [47/49] auc=0.9943 C=10, s=20
+  [48/49] auc=0.9949 C=30, s=20
+  [49/49] auc=0.9948 C=100, s=20
+tune_cv svm_rbf [svm_worst]: geriausias AUC=0.9948 C=0.3, s=5 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\svm_worst.mat
+train_ensemble [ensemble] selection=1: 8 polinomo konfig. x 25 skaidiniai
+  fold r=1 f=1 požymiai=24
+  fold r=1 f=2 požymiai=23
+  fold r=1 f=3 požymiai=23
+  fold r=1 f=4 požymiai=23
+  fold r=1 f=5 požymiai=23
+  fold r=2 f=1 požymiai=23
+  fold r=2 f=2 požymiai=23
+  fold r=2 f=3 požymiai=24
+  fold r=2 f=4 požymiai=23
+  fold r=2 f=5 požymiai=23
+  fold r=3 f=1 požymiai=23
+  fold r=3 f=2 požymiai=24
+  fold r=3 f=3 požymiai=23
+  fold r=3 f=4 požymiai=23
+  fold r=3 f=5 požymiai=23
+  fold r=4 f=1 požymiai=23
+  fold r=4 f=2 požymiai=24
+  fold r=4 f=3 požymiai=23
+  fold r=4 f=4 požymiai=24
+  fold r=4 f=5 požymiai=23
+  fold r=5 f=1 požymiai=23
+  fold r=5 f=2 požymiai=24
+  fold r=5 f=3 požymiai=23
+  fold r=5 f=4 požymiai=23
+  fold r=5 f=5 požymiai=23
+  polinomas AUC=0.9979 d=3 s=4 C=1
+train_ensemble [ensemble] svoriai=[0.58 0.33 0.08] t_se98=0.33 Se_ok=1 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\ensemble.mat
+train_ensemble [ensemble_noselect] selection=0: 8 polinomo konfig. x 25 skaidiniai
+  fold r=1 f=1 požymiai=30
+  fold r=1 f=2 požymiai=30
+  fold r=1 f=3 požymiai=30
+  fold r=1 f=4 požymiai=30
+  fold r=1 f=5 požymiai=30
+  fold r=2 f=1 požymiai=30
+  fold r=2 f=2 požymiai=30
+  fold r=2 f=3 požymiai=30
+  fold r=2 f=4 požymiai=30
+  fold r=2 f=5 požymiai=30
+  fold r=3 f=1 požymiai=30
+  fold r=3 f=2 požymiai=30
+  fold r=3 f=3 požymiai=30
+  fold r=3 f=4 požymiai=30
+  fold r=3 f=5 požymiai=30
+  fold r=4 f=1 požymiai=30
+  fold r=4 f=2 požymiai=30
+  fold r=4 f=3 požymiai=30
+  fold r=4 f=4 požymiai=30
+  fold r=4 f=5 požymiai=30
+  fold r=5 f=1 požymiai=30
+  fold r=5 f=2 požymiai=30
+  fold r=5 f=3 požymiai=30
+  fold r=5 f=4 požymiai=30
+  fold r=5 f=5 požymiai=30
+  polinomas AUC=0.9964 d=2 s=4 C=1
+train_ensemble [ensemble_noselect] svoriai=[0.50 0.22 0.28] t_se98=0.38 Se_ok=1 -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\models\ensemble_noselect.mat
+freeze.txt -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\freeze.txt
+
+=== 4 etapas B: evaluate_test VIENA karta ===
+evaluate_test: atrakinamas testas n=114 (M=42 B=72)
+results_test -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\results_test.csv
+Error using robustness>one_metrics
+Too many output arguments.
+
+Error in robustness (line 22)
+    [se, sp, auc, bs] = one_metrics(R, Xtest, ytest);
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Error in evaluate_test (line 133)
+robustness(cfg, ytest, Xtest, Xtrain);
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Error in run_all (line 91)
+    evaluate_test(cfg);
+    ^^^^^^^^^^^^^^^^^^
+
+=== 1 etapas: duomenu gavimas ===
+get_wdbc: jau yra C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\raw\wdbc.data (124103 B), pakartotinai nesiunciu.
+get_wdbc: jau yra C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\raw\wdbc.names (4708 B), pakartotinai nesiunciu.
+get_wdbc: wdbc.data SHA-256 = d606af411f3e5be8a317a5a8b652b425aaf0ff38ca683d5327ffff94c3695f4a
+get_wdbc: wdbc.names SHA-256 = 840e04e3f20f8a5b326892f3b9cbc01c4cd6f7e6c597630b701ef6c0ac79f5ef
+load_wdbc: irasyta C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\wdbc.mat (X 569x30, M=212, B=357)
+
+=== 2 etapas: skaidymas ir preprocessing ===
+make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+
+=== Testai pries 4 etapa ===
+Setting up ProjectFixture
+Done setting up ProjectFixture: Opened project 'IS_Egzaminas'.
+__________
+
+Running test_lr_gradient
+..
+Done test_lr_gradient
+__________
+
+Running test_metrics
+.
+Done test_metrics
+__________
+
+Running test_no_leakage
+make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+........
+Done test_no_leakage
+__________
+
+Running test_predict_case
+
+================================================================================
+test_predict_case/testMatchesEvaluateTest was filtered.
+================================================================================
+.
+================================================================================
+test_predict_case/testRejectsBadShape was filtered.
+================================================================================
+.
+Done test_predict_case
+__________
+
+Running test_split
+make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+.make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+.make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+.make_split: train=455 (M=170 B=285), test=114 (M=42 B=72), idx irasyti i C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\data\processed\split_idx.mat
+.
+Done test_split
+__________
+
+Running test_svm_decision
+..
+Done test_svm_decision
+__________
+
+Tearing down ProjectFixture
+Done tearing down ProjectFixture: Closed project 'IS_Egzaminas'.
+__________
+
+Running test_select_features
+...
+Done test_select_features
+__________
+
+Running test_svm_poly
+.
+Done test_svm_poly
+__________
+
+Failure Summary:
+
+     Name                                       Failed  Incomplete  Reason(s)
+    ========================================================================================
+     test_predict_case/testMatchesEvaluateTest              X       Filtered by assumption.
+    ----------------------------------------------------------------------------------------
+     test_predict_case/testRejectsBadShape                  X       Filtered by assumption.
+                                     Name                                      Passed    Failed
+    _______________________________________________________________________    ______    ______
+
+    {'test_lr_gradient/testFiniteDifferenceMatchesGradient'               }    true      false 
+    {'test_lr_gradient/testCoefficientsMatchFitclinear'                   }    true      false 
+    {'test_metrics/testHandEightCases'                                    }    true      false 
+    {'test_no_leakage/testFitSignatureRejectsIndicesAndFullMatrix'        }    true      false 
+    {'test_no_leakage/testMuSigmaFromTrainOnly'                           }    true      false 
+    {'test_no_leakage/testApplyScalerSourceDoesNotFit'                    }    true      false 
+    {'test_no_leakage/testFitScalerSourceHasNoIdxTest'                    }    true      false 
+    {'test_no_leakage/testInnerCvRefitsScalerEachFold'                    }    true      false 
+    {'test_no_leakage/testOofScoreComesFromUnseenFold'                    }    true      false 
+    {'test_no_leakage/testEvaluateTestRefusesUnlockedMetricsWithoutModels'}    true      false 
+    {'test_no_leakage/testRunAllFreezesBeforeEvaluate'                    }    true      false 
+    {'test_predict_case/testMatchesEvaluateTest'                          }    false     false 
+    {'test_predict_case/testRejectsBadShape'                              }    false     false 
+    {'test_split/testHoldOutSizesAndDisjoint'                             }    true      false 
+    {'test_split/testStratifiedClassCounts'                               }    true      false 
+    {'test_split/testSeed42Reproducible'                                  }    true      false 
+    {'test_split/testSplitFileContainsOnlyIndices'                        }    true      false 
+    {'test_svm_decision/testDecisionMatchesPredict'                       }    true      false 
+    {'test_svm_decision/testPlattVsFitPosterior'                          }    true      false 
+    {'test_select_features/testDropsWeakerMemberOfCollinearPair'          }    true      false 
+    {'test_select_features/testRejectsFullWdbcMatrix'                     }    true      false 
+    {'test_select_features/testTrainRowsOnlyChangeTheChoice'              }    true      false 
+    {'test_svm_poly/testDecisionMatchesPredict'                           }    true      false 
+
+
+=== 4 etapas A: A2/A5 mokymas (testas dar uzrakintas) ===
+freeze.txt -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\freeze.txt
+
+=== 4 etapas B: evaluate_test VIENA karta ===
+evaluate_test: atrakinamas testas n=114 (M=42 B=72)
+results_test -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\results_test.csv
+robustness -> C:\Users\kamil\Documents\Uni Stuff\2026-09\Egzaminas\Kruties_Navikas\reports\robustness_results.csv
+evaluate_test: CSV irasyti. Antras kvietimas bus atmestas.
+
+=== 5 etapas: predict_case ===
+predict_case: decision=M p=0.99914470905 t=0.2200 margin=0 ood=0
+Tai mokomasis sprendimo palaikymo prototipas. Rezultatas nėra klinikinė diagnozė ir nepakeičia gydytojo sprendimo.
+Setting up ProjectFixture
+Done setting up ProjectFixture: Opened project 'IS_Egzaminas'.
+__________
+
+Running test_predict_case
+..
+Done test_predict_case
+__________
+
+Tearing down ProjectFixture
+Done tearing down ProjectFixture: Closed project 'IS_Egzaminas'.
+__________
+
+4 ir 5 etapai baigti.

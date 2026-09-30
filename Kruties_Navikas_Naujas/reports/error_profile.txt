@@ -1,0 +1,13 @@
+ensemble t_se98=0.3300 FN=3 FP=4
+majority t_se98=0.5000 FN=42 FP=0
+logreg t_se98=0.2200 FN=2 FP=4
+svm_rbf t_se98=0.1800 FN=2 FP=4
+mlp t_se98=0.3400 FN=3 FP=2
+rbfnet t_se98=0.2200 FN=3 FP=6
+svm_poly t_se98=0.1500 FN=2 FP=7
+ensemble_noselect t_se98=0.3800 FN=3 FP=3
+svm_linear t_se98=0.2800 FN=2 FP=3
+svm_mean t_se98=0.2100 FN=3 FP=11
+svm_worst t_se98=0.3000 FN=2 FP=4
+train median M: cp_worst=0.1827 area_worst=1317.5
+train median B: cp_worst=0.07864 area_worst=546.7

@@ -1,0 +1,13 @@
+cfg = config();
+S = load(fullfile(cfg.paths.processed, 'wdbc.mat'), 'X', 'y');
+sp = load(fullfile(cfg.paths.processed, 'split_idx.mat'), 'idxTrain');
+Xtr = S.X(sp.idxTrain, :);
+ytr = S.y(sp.idxTrain);
+sc = fit_scaler(Xtr, cfg);
+Z = apply_scaler(Xtr, sc);
+t0 = tic;
+mdl = train_mlp(Z, ytr, 10, 0.1, 1, cfg);
+fprintf('mlp_seconds=%.2f\n', toc(t0));
+t1 = tic;
+mdl2 = train_svm_rbf(Z, ytr, 1, 5, cfg, 'gaussian');
+fprintf('svm_seconds=%.2f\n', toc(t1));
