@@ -4,6 +4,8 @@ run_all.m – visos grandinės paleidimas iš eilės.
 
 make_report_plots.m – ataskaitos grafikai iš užšaldytų prognozių.
 
+config.m – visi fiksuoti nustatymai.
+
 -----------------------------------------------------------------------------------------------
 
 mlp_backprop_manual.m – rankinis atgalinis sklidimas: išėjimo formulė ir svorių atnaujinimas.
@@ -67,5 +69,3 @@ select_features.m – požymių atranka, kai |r| > 0,95.
 get_wdbc.m / load_wdbc.m – duomenų atsisiuntimas ir patikra.
 
 predict_case.m – vieno naujo atvejo prognozė.
-
-config.m – visi fiksuoti nustatymai.
