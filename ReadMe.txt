@@ -56,8 +56,6 @@ calibration_curve.m – kalibracijos kreivė.
 
 repeated_nested_cv.m – kartojama įdėtinė kryžminė patikra.
 
-
-
 write_exam_figures.m – ROC, kalibracijos ir klaidų pasiskirstymo grafikai.
 
 make_split.m / make_inner_cv.m – išorinis 455/114 skaidymas ir vidinis CV.
@@ -69,7 +67,5 @@ select_features.m – požymių atranka, kai |r| > 0,95.
 get_wdbc.m / load_wdbc.m – duomenų atsisiuntimas ir patikra.
 
 predict_case.m – vieno naujo atvejo prognozė.
-
-
 
 config.m – visi fiksuoti nustatymai.
